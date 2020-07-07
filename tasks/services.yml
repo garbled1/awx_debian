@@ -46,6 +46,7 @@
     follow_redirects: all
     validate_certs: no
     method: PUT
+    timeout: 60
     body: '{"ACTIVITY_STREAM_ENABLED":true,
             "ACTIVITY_STREAM_ENABLED_FOR_INVENTORY_SYNC":false,
             "ORG_ADMINS_CAN_SEE_ALL_USERS":true,
@@ -54,6 +55,8 @@
             "TOWER_URL_BASE":"{{ awx_debian_url }}",
             "REMOTE_HOST_HEADERS":["HTTP_X_FORWARDED_FOR","REMOTE_ADDR","REMOTE_HOST"],
             "PROXY_IP_WHITELIST":[],
+            "AUTOMATION_ANALYTICS_LAST_GATHER":null,
+            "AUTOMATION_ANALYTICS_GATHER_INTERVAL": 14400,
             "BROKER_DURABILITY":true}'
     body_format: json
   ignore_errors: ansible_check_mode

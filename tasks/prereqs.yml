@@ -49,5 +49,4 @@
     - 'awx-dispatch'
     - 'awx-callback'
     - 'awx-workers'
-  when: awx_debian_refresh or
-        awx_debian_build
+  when: awx_debian_refresh or awx_debian_build

@@ -1,5 +1,4 @@
 ---
-
 - name: Perform Django Database Migrations
   command: "awx-manage migrate --no-input"
   environment:

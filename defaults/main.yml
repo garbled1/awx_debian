@@ -1,7 +1,7 @@
 ---
 
 # AWX Version to install
-awx_debian_ver: "6.1.0"
+awx_debian_ver: "13.0.0"
 
 # System user to run AWX processes
 awx_debian_user: "awx"

@@ -63,6 +63,14 @@
   become: yes
   become_user: "{{ awx_debian_user }}"
 
+- name: Install additional AWX requirements not listed
+  pip:
+    virtualenv: "{{ awx_debian_home }}/venv/awx"
+    name:
+      - python-memcached
+  become: yes
+  become_user: "{{ awx_debian_user }}"
+
 - name: Download Official AWX Logo
   git:
     repo: "https://github.com/ansible/awx-logos.git"

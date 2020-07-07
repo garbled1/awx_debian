@@ -49,6 +49,7 @@
 - name: Install AWX Build Dependencies
   apt:
     name:
+      - 'sudo'
       - 'gcc'
       - 'git'
       - 'gettext'
@@ -89,8 +90,16 @@
   with_items:
     - 'memcached'
     - 'nginx'
-    - 'postgresql'
     - 'rabbitmq-server'
+
+- name: Verify Postgres Services are Started
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - 'postgresql'
+  when: inventory_hostname != awx_debian_db_host
 
 - name: Disable Default RabbitMQ vhost
   rabbitmq_vhost:

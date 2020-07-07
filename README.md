@@ -49,6 +49,6 @@ for Postgres, Memcached, and RabbitMQ
 | awx_debian_official_logo |   True/False    |   False   | Builds UI with Official awx-logos |
 
 #### TO DO
-* Not so Alone: Add External Database / RabbitMQ Support
+* Not so Alone: Add External RabbitMQ Support
 * BYOC:         Allow for SSL certificate imports
 * Superuser:    Must awx_debian_refresh=True to redo new administrator

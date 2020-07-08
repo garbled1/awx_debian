@@ -44,9 +44,7 @@
     daemon_reload: yes
   failed_when: False
   with_items:
-    - 'awx-django'
-    - 'awx-daphne'
-    - 'awx-dispatch'
-    - 'awx-callback'
-    - 'awx-workers'
+    - awx-supervisor
+    - awx-supervisor_task
+    - awx-rsyslog
   when: awx_debian_refresh or awx_debian_build

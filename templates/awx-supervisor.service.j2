@@ -1,14 +1,15 @@
 # {{ ansible_managed }}
 
 [Unit]
-Description=AWX Django Channel Manager
+Description=AWX supervisor
 Wants=network-online.target
 
 [Service]
 User={{ awx_debian_user }}
 Group={{ awx_debian_user }}
-ExecStart={{ awx_debian_home }}/venv/awx/bin/awx-manage run_dispatcher
+ExecStart=supervisord -c /etc/supervisor/awx-supervisor.conf
 WorkingDirectory={{ awx_debian_home }}
+RuntimeDirectory=supervisor
 
 [Install]
 WantedBy=multi-user.target

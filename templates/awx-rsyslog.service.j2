@@ -7,8 +7,9 @@ Wants=network-online.target
 [Service]
 User={{ awx_debian_user }}
 Group={{ awx_debian_user }}
-ExecStart={{ awx_debian_home }}/venv/awx/bin/awx-manage run_callback_receiver
+ExecStart=/usr/sbin/rsyslogd -n -i /var/run/awx-rsyslog/rsyslog.pid -f {{ awx_debian_home }}/rsyslog/rsyslog.conf
 WorkingDirectory={{ awx_debian_home }}
+RuntimeDirectory=awx-rsyslog
 
 [Install]
 WantedBy=multi-user.target

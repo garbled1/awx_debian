@@ -33,6 +33,7 @@
     - "{{ awx_debian_home }}/venv"
     - "{{ awx_debian_home }}/projects"
     - "{{ awx_debian_home }}/job_status"
+    - "{{ awx_debian_home }}/vendor"
     - "/etc/tower/conf.d"
     - "/var/log/tower"
     - "/usr/share/awx"
@@ -67,20 +68,29 @@
       - 'python3-dev'
       - 'python3-venv'
       - 'virtualenv'
+      - 'bubblewrap'
   when: awx_debian_build or
         awx_debian_refresh
 
 - name: Install AWX System Service Dependencies
   apt:
     name:
-      - 'memcached'
       - 'nginx-full'
       - 'postgresql-all'
       - 'python'
       - 'python-psycopg2'
       - 'python3'
-      - 'rabbitmq-server'
       - 'sosreport'
+      - redis
+      - supervisor
+
+- name: Fix redis config
+  blockinfile:
+    path: /etc/redis/redis.conf
+    block: |
+      unixsocket /var/run/redis/redis-server.sock
+      unixsocketperm 777
+    insertafter: '# Unix socket.'
 
 - name: Verify Dependent Services are Started
   systemd:
@@ -88,9 +98,8 @@
     state: started
     enabled: yes
   with_items:
-    - 'memcached'
+    - redis
     - 'nginx'
-    - 'rabbitmq-server'
 
 - name: Verify Postgres Services are Started
   systemd:
@@ -100,25 +109,3 @@
   with_items:
     - 'postgresql'
   when: inventory_hostname != awx_debian_db_host
-
-- name: Disable Default RabbitMQ vhost
-  rabbitmq_vhost:
-    name: "/"
-    state: absent
-  ignore_errors: ansible_check_mode
-
-- name: Create AWX RabbitMQ vhost
-  rabbitmq_vhost:
-    name: "{{ awx_debian_rmq_vhost }}"
-  ignore_errors: ansible_check_mode
-
-- name: Configure AWX RabbitMQ permissions
-  rabbitmq_user:
-    user:     "{{ awx_debian_rmq_user }}"
-    password: "{{ awx_debian_rmq_pw }}"
-    permissions:
-      - vhost: "{{ awx_debian_rmq_vhost  }}"
-        configure_priv: .*
-        read_priv: .*
-        write_priv: .*
-  ignore_errors: ansible_check_mode

@@ -1,4 +1,38 @@
 ---
+- name: create rsyslog dir
+  file:
+    state: directory
+    path: '{{ awx_debian_home }}/rsyslog/conf.d'
+    owner: "{{ awx_debian_user }}"
+    group: "{{ awx_debian_user }}"
+    mode: 0775
+
+- name: create supervisor dir
+  file:
+    state: directory
+    path: /etc/supervisor
+    owner: "{{ awx_debian_user }}"
+    group: "{{ awx_debian_user }}"
+    mode: 0775
+
+- name: Install rsyslog.conf
+  template:
+    src: rsyslog.conf.j2
+    dest: '{{ awx_debian_home }}/rsyslog/rsyslog.conf'
+    owner: "{{ awx_debian_user }}"
+    group: "{{ awx_debian_user }}"
+    mode: 0664
+
+- name: install supervisor files
+  template:
+    src: '{{ item }}.j2'
+    dest: '/etc/supervisor/awx-{{ item }}'
+    owner: "{{ awx_debian_user }}"
+    group: "{{ awx_debian_user }}"
+    mode: 0664
+  with_items:
+    - supervisor.conf
+    - supervisor_task.conf
 
 - name: Install systemd unit files for AWX and dependent services
   template:
@@ -7,11 +41,9 @@
     group: "{{ awx_debian_user }}"
     mode: 0770
   with_items:
-    - 'awx-django.service'
-    - 'awx-daphne.service'
-    - 'awx-dispatch.service'
-    - 'awx-callback.service'
-    - 'awx-workers.service'
+    - awx-supervisor.service
+    - awx-supervisor_task.service
+    - awx-rsyslog.service
 
 - name: Start AWX Services
   systemd:
@@ -20,11 +52,9 @@
     daemon_reload: yes
     enabled: yes
   with_items:
-    - 'awx-django'
-    - 'awx-daphne'
-    - 'awx-dispatch'
-    - 'awx-callback'
-    - 'awx-workers'
+    - awx-rsyslog
+    - awx-supervisor
+    - awx-supervisor_task
 
 - name: Set AWX URL to use https if SSL is Enabled
   set_fact:

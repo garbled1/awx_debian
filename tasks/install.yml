@@ -39,6 +39,14 @@
   become: yes
   become_user: "{{ awx_debian_user }}"
 
+- name: Install Ansible
+  pip:
+    virtualenv: "{{ awx_debian_home }}/venv/ansible"
+    name:
+      - ansible
+  become: yes
+  become_user: "{{ awx_debian_user }}"
+
 - name: Install AWX virtualenv
   make:
     chdir: "/home/{{ awx_debian_user }}/awx-{{ awx_debian_ver }}"
@@ -60,14 +68,6 @@
     virtualenv: "{{ awx_debian_home }}/venv/awx"
     requirements: "{{ item.path }}"
   with_items: "{{ awx_requirements.files }}"
-  become: yes
-  become_user: "{{ awx_debian_user }}"
-
-- name: Install additional AWX requirements not listed
-  pip:
-    virtualenv: "{{ awx_debian_home }}/venv/awx"
-    name:
-      - python-memcached
   become: yes
   become_user: "{{ awx_debian_user }}"
 
@@ -157,10 +157,10 @@
     name: "file:///home/{{ awx_debian_user }}/awx-{{ awx_debian_ver }}/dist/awx-{{ awx_debian_ver }}.tar.gz"
     virtualenv: "{{ awx_debian_home }}/venv/awx"
 
-- name: Delete AWX Source
-  file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    - '/home/{{ awx_debian_user }}/awx-{{ awx_debian_ver }}'
-    - '/home/{{ awx_debian_user }}/awx-logos'
+# - name: Delete AWX Source
+#   file:
+#     path: "{{ item }}"
+#     state: absent
+#   with_items:
+#     - '/home/{{ awx_debian_user }}/awx-{{ awx_debian_ver }}'
+#     - '/home/{{ awx_debian_user }}/awx-logos'
